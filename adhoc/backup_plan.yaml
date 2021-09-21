@@ -85,10 +85,3 @@ Resources:
           - ConditionType: "STRINGEQUALS"
             ConditionKey: "Name"
             ConditionValue: "dynamo-db"
-
-
-
-
-
-
-
