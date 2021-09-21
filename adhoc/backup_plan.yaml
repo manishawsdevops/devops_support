@@ -1,1 +1,94 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Description:  > 
+              AWS Cloudformation sample template to take the backup of  RDS and Dynamo DB as below
+              Daily for 90 days
+              weekly for 1 year
+              Monthly for 1 year
+              yearly for 7 years
+
+Resources:
+
+  BackupRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: AWSBackupRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "backup.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+
+  BackupPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: AccessPolicy
+      Roles: 
+        - !Ref BackupRole
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: 
+              - rds:*
+              - dynamodb:*  
+            Resource: "*"
+
+  BackupVault:
+    Type: AWS::Backup::BackupVault
+    Properties:
+      BackupVaultName: "BackupVault"
+
+  BackupPlan:
+    Type: AWS::Backup::BackupPlan
+    Properties: 
+      BackupPlan:
+        BackupPlanName: "BackupPlan"
+        BackupPlanRule:
+          - RuleName: "BackupRuleDaily"
+            TargetBackupVault: "BackupVault"
+            ScheduleExpression: "cron(0 10 * * ? *)"
+            Lifecycle:
+              DeleteAfterDays: 90
+          - RuleName: "BackupRuleWeekly"
+            TargetBackupVault: "BackupVault"
+            ScheduleExpression: "cron(0 10 ? * SUN *)"
+            Lifecycle:
+              DeleteAfterDays: 365
+          - RuleName: "BackupRuleMonthly"
+            TargetBackupVault: "BackupVault"
+            ScheduleExpression: "cron(0 10 1 * ? *)"
+            Lifecycle:
+              DeleteAfterDays: 365
+          - RuleName: "BackupRuleYearly"
+            TargetBackupVault: "BackupVault"
+            ScheduleExpression: "cron(0 10 * * ? 2021/1)"
+            Lifecycle:
+              DeleteAfterDays: 2555
+
+  BackupResources:
+    Type: AWS::Backup::BackupSelection
+    Properties: 
+      BackupPlanId: !Ref BackupPlan
+      BackupSelection: 
+        IamRoleArn: !GetAtt BackupRole.Arn
+        SelectionName: "TagSelection"
+        ListOfTags:
+          - ConditionType: "STRINGEQUALS"
+            ConditionKey: "Name"
+            ConditionValue: "rds"
+          - ConditionType: "STRINGEQUALS"
+            ConditionKey: "Name"
+            ConditionValue: "dynamo-db"
+
+
+
+
+
+
+
