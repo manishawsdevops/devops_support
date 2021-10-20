@@ -16,7 +16,7 @@ for i in client.images.list():
     d1 = datetime.now().date()
     d2 = datetime.strptime(i.attrs['Created'][0:10], '%Y-%m-%d').date()
     delta = d1 - d2
-    if int(delta.days) >= 7:
+    if int(delta.days) > 7:
         print(i.tags)
     
     
