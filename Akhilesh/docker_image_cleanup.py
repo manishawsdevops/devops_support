@@ -13,6 +13,9 @@ from datetime import datetime
 
 client = docker.from_env()
 
+print('Executing Docker Prune - Deleteing Unused Images')
+client.images.prune()
+
 images_to_preserve = [
     'node','mariadb','pmt-gra','kapacitor','debian','pmt-centos','centos','ops-dash','matisq',
     'atmoz','oraclelinux','openjdk','fluent','tiangolo','chronograf','ops-dash','portainer','dashboardjenkins'
