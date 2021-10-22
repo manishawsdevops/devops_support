@@ -24,7 +24,8 @@ for i in client.images.list():
     d2 = datetime.strptime(i.attrs['Created'][0:10], '%Y-%m-%d').date()
     delta = d1 - d2
     if int(delta.days) > 5:
-        docker_image = i.tags[0].split(':')[0]
+        # docker_image = i.tags[0].split(':')[0]
+        docker_image = i.id.split(':')[0]
         for img in images_to_preserve:
             if img in docker_image:
                 delete_flag = True              
