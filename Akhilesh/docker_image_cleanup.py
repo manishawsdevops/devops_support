@@ -8,6 +8,7 @@
 # The current release changes every month, so the script should know the current release.
 
 import docker
+import os
 from datetime import datetime
 
 client = docker.from_env()
@@ -28,5 +29,9 @@ for i in client.images.list():
             if img in docker_image:
                 delete_flag = True              
         if not delete_flag:
-            client.images.remove(docker_image)
+            k = i.id.split(':')[1]
+            os.system(f'docker rmi {k}')
             print(f'Deleted Docker image {docker_image}')
+    
+    
+    
