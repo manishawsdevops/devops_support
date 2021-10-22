@@ -25,7 +25,6 @@ for i in client.images.list():
     delta = d1 - d2
     if int(delta.days) > 5:
         docker_image = i.attrs['RepoDigests'][0].split('@')[0]
-        print(docker_image)
         for img in images_to_preserve:
             if img in docker_image:
                 delete_flag = True              
