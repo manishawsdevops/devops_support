@@ -27,14 +27,18 @@ for i in client.images.list():
     d2 = datetime.strptime(i.attrs['Created'][0:10], '%Y-%m-%d').date()
     delta = d1 - d2
     if int(delta.days) > 5:
-        docker_image = i.attrs['RepoDigests'][0].split('@')[0]
-        for img in images_to_preserve:
-            if img in docker_image:
-                delete_flag = True              
-        if not delete_flag:
-            k = i.id.split(':')[1]
-            #os.system(f'docker rmi {k}')
-            print(f'Deleted Docker image {docker_image}')
+        try:
+            docker_image = i.attrs['RepoDigests'][0].split('@')[0]
+            for img in images_to_preserve:
+                if img in docker_image:
+                    delete_flag = True              
+            if not delete_flag:
+                k = i.id.split(':')[1]
+                #os.system(f'docker rmi {k}')
+                print(f'Deleted Docker image {docker_image}')
+        except Exception as err:
+            print(err)
+            print(i)
     
     
     
