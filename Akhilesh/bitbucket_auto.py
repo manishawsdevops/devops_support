@@ -6,7 +6,7 @@ import requests,base64
 
 payload={}
 headers = {
-  'Authorization': 'Basic bWFuaXNoYXdzZnJlZWxhbmNlcjp0UzMyOTU3MzlmcXdMYktISmg5WQ=='
+  'Authorization': 'Basic '
 }
 
 repository_id = 'akhilesh'
