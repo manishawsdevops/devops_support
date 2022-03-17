@@ -1,6 +1,0 @@
-1. Identify the resources that needs to be migrated in the AWS Account.
-2. Take the necessary Backups for the resources.
-3. Create the CF Templates if necessary
-4. Migrate the resources
-5. Notify the Stake holders
-6. After the UAT in the receipient account - Terminate the resources in Source AWS Account.
