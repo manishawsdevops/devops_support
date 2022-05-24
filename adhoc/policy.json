@@ -1,69 +1,121 @@
 {
     "Version": "2012-10-17",
     "Statement": [
-      {
-        "Sid": "AllowToDescribeAll",
-        "Effect": "Allow",
-        "Action": [
-          "ec2:Describe*"
-        ],
-        "Resource": "*"
-      },
-      {
-        "Sid": "AllowRunInstances",
-        "Effect": "Allow",
-        "Action": "ec2:RunInstances",
-        "Resource": [
-          "arn:aws:ec2:*::image/*",
-          "arn:aws:ec2:*::snapshot/*",
-          "arn:aws:ec2:*:*:subnet/*",
-          "arn:aws:ec2:*:*:network-interface/*",
-          "arn:aws:ec2:*:*:security-group/*",
-          "arn:aws:ec2:*:*:key-pair/*"
-        ]
-      },
-      {
-        "Sid": "AllowRunInstancesWithRestrictions",
-        "Effect": "Allow",
-        "Action": [
-          "ec2:CreateVolume",
-          "ec2:RunInstances"
-        ],
-        "Resource": [
-          "arn:aws:ec2:*:*:volume/*",
-          "arn:aws:ec2:*:*:instance/*",
-          "arn:aws:ec2:*:*:network-interface/*"
-        ],
-        "Condition": {
-          "StringEquals": {
-            "aws:RequestTag/Owner": "Varsha"
-          },
-          "ForAnyValue:StringEquals": {
-            "aws:TagKeys": [
-              "Owner"
+        {
+            "Sid": "AllowToDescribeAll",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:Describe*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowRunInstances",
+            "Effect": "Allow",
+            "Action": "ec2:RunInstances",
+            "Resource": [
+                "arn:aws:ec2:*::image/*",
+                "arn:aws:ec2:*::snapshot/*",
+                "arn:aws:ec2:*:*:subnet/*",
+                "arn:aws:ec2:*:*:network-interface/*",
+                "arn:aws:ec2:*:*:security-group/*",
+                "arn:aws:ec2:*:*:key-pair/*"
             ]
-          }
-        }
-      },
-      {
-        "Sid": "AllowCreateTagsOnlyLaunching",
-        "Effect": "Allow",
-        "Action": [
-          "ec2:CreateTags"
-        ],
-        "Resource": [
-          "arn:aws:ec2:*:*:volume/*",
-          "arn:aws:ec2:*:*:instance/*",
-          "arn:aws:ec2:*:*:network-interface/*"
-        ],
-        "Condition": {
-          "StringEquals": {
-            "ec2:CreateAction": [
-              "RunInstances",
-              "CreateVolume"
+        },
+        {
+            "Sid": "AllowRunInstancesWithRestrictions1",
+            "Effect": "Deny",
+            "Action": [
+                "ec2:CreateVolume",
+                "ec2:RunInstances"
+            ],
+            "Resource": [
+                "arn:aws:ec2:*:*:volume/*",
+                "arn:aws:ec2:*:*:instance/*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:RequestTag/cost_center": "?*"
+                }
+            }
+        },
+        {
+            "Sid": "AllowRunInstancesWithRestrictions2",
+            "Effect": "Deny",
+            "Action": [
+                "ec2:CreateVolume",
+                "ec2:RunInstances"
+            ],
+            "Resource": [
+                "arn:aws:ec2:*:*:volume/*",
+                "arn:aws:ec2:*:*:instance/*"
+            ],
+            "Condition": {
+                "ForAllValues:StringNotLike": {
+                    "aws:TagKeys": "Production"
+                }
+            }
+        },
+        {
+            "Sid": "AllowRunInstancesWithRestrictions3",
+            "Effect": "Deny",
+            "Action": [
+                "ec2:CreateVolume",
+                "ec2:RunInstances"
+            ],
+            "Resource": [
+                "arn:aws:ec2:*:*:volume/*",
+                "arn:aws:ec2:*:*:instance/*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:RequestTag/identifier": "?????"
+                }
+            }
+        },
+        {
+            "Sid": "AllowRunInstancesWithRestrictions4",
+            "Effect": "Deny",
+            "Action": [
+                "ec2:CreateVolume",
+                "ec2:RunInstances"
+            ],
+            "Resource": [
+                "arn:aws:ec2:*:*:volume/*",
+                "arn:aws:ec2:*:*:instance/*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:RequestTag/env": [
+                        "sandbox",
+                        "dev",
+                        "prod"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "AllowRunInstances1",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateVolume",
+                "ec2:RunInstances"
+            ],
+            "Resource": [
+                "arn:aws:ec2:*:*:volume/*",
+                "arn:aws:ec2:*:*:instance/*"
             ]
-          }
+        },
+        {
+            "Sid": "AllowCreateTagsOnRunInstance",
+            "Effect": "Allow",
+            "Action": "ec2:CreateTags",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "ec2:CreateAction": "RunInstances"
+                }
+            }
         }
-      }
     ]
-  }
+}
